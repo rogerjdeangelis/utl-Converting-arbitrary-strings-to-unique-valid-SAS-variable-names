@@ -8,8 +8,29 @@ Converting arbitrary strings to unique valid SAS variable names
     I need to create valid SAS names from arbitrary character strings.           
                                                                                  
     I thought there was a SCL function to convert a                              
-    strings to a valid SAS name?                                                 
-                                                                                 
+    strings to a valid SAS name?    
+    
+    Recent Comments and solution by Paul Dorfman                                             
+    Paul Dorfman                                                                            
+    sashole@bellsouth.net                                                                   
+                                                                                            
+    Roger,                                                                                  
+                                                                                            
+    Methinks it's as simple as:                                                             
+    uniqueName = translate (put (md5 (AnyString), $hex32.), "HGKLMNXYZ", "0123456789") ;    
+    Of course, we only need to replace the *leftmost* hex digit in the response of the      
+    PUT function in case it is 0-9; elsewhere, the digits are fine. But what the heck,      
+    we can just replace all the digits in the result of PUT with letters it doesn't have    
+    in one fell swoop of the TRANSLATE action. Since the result of PUT contains only        
+    letters A-F, the uniqueness is preserved.                                               
+    ruth be told, this is a one-way approach: You can't take uniqueName generated this      
+    way and convert it back to AnyString; so, you will have to maintain a cross-reference   
+    table. However, this is as easy as storing the pairs in a character format.             
+    Best regards                                                                            
+      
+          
+          
+          
     *_                   _                                                       
     (_)_ __  _ __  _   _| |_                                                     
     | | '_ \| '_ \| | | | __|                                                    
